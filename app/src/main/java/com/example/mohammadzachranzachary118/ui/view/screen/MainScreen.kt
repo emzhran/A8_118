@@ -34,6 +34,7 @@ object MainScreen: DestinasiNavigasi {
 @Composable
 fun MainMenuScreen(
     onNavigateToBangunan: () -> Unit,
+    onNavigateToKamar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -73,6 +74,16 @@ fun MainMenuScreen(
                 )
             ) {
                 Text(text = "Bangunan",
+                    color = Color.White)
+            }
+            Button(
+                onClick = { onNavigateToKamar() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.menu)
+                )
+            ) {
+                Text(text = "Kamar",
                     color = Color.White)
             }
         }
