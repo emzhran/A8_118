@@ -14,6 +14,14 @@ import com.example.mohammadzachranzachary118.ui.view.bangunan.DestinasiUpdate
 import com.example.mohammadzachranzachary118.ui.view.bangunan.EntryBangunanScreen
 import com.example.mohammadzachranzachary118.ui.view.bangunan.HomeBangunanScreen
 import com.example.mohammadzachranzachary118.ui.view.bangunan.UpdateBangunanScreen
+import com.example.mohammadzachranzachary118.ui.view.kamar.DestinasiDetailKamar
+import com.example.mohammadzachranzachary118.ui.view.kamar.DestinasiHomeKamar
+import com.example.mohammadzachranzachary118.ui.view.kamar.DestinasiInsertkamar
+import com.example.mohammadzachranzachary118.ui.view.kamar.DestinasiUpdateKamar
+import com.example.mohammadzachranzachary118.ui.view.kamar.DetailKamarScreen
+import com.example.mohammadzachranzachary118.ui.view.kamar.EntryKamarScreen
+import com.example.mohammadzachranzachary118.ui.view.kamar.HomeKamarScreen
+import com.example.mohammadzachranzachary118.ui.view.kamar.UpdateKamarScreen
 import com.example.mohammadzachranzachary118.ui.view.screen.MainMenuScreen
 import com.example.mohammadzachranzachary118.ui.view.screen.MainScreen
 
@@ -26,7 +34,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
     ) {
         composable(MainScreen.route) {
             MainMenuScreen(
-                onNavigateToBangunan = { navController.navigate(DestinasiHome.route) }
+                onNavigateToBangunan = { navController.navigate(DestinasiHome.route) },
+                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)}
             )
         }
         composable(DestinasiHome.route) {
@@ -56,6 +65,47 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             val id_bangunan = backStackEntry.arguments?.getString("id_bangunan") ?: return@composable
             UpdateBangunanScreen(
                 id_bangunan = id_bangunan,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(DestinasiHomeKamar.route) {
+            HomeKamarScreen(
+                onDetailClick = {id_kamar ->
+                    navController.navigate("${DestinasiDetailKamar.route}/$id_kamar")
+                },
+                navigateBack = { navController.navigateUp() },
+                navigateToItemEntry = { navController.navigate(DestinasiInsertkamar.route) },
+            )
+        }
+        composable(
+            route = "${DestinasiDetailKamar.route}/{id_kamar}",
+            arguments = listOf(navArgument("id_kamar") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_kamar = backStackEntry.arguments?.getString("id_kamar") ?: return@composable
+            DetailKamarScreen(
+                id_kamar = id_kamar,
+                navigateBack = { navController.navigateUp() },
+                navController = navController
+            )
+        }
+        composable(DestinasiInsertkamar.route) {
+            EntryKamarScreen(
+                navigateBack = {
+                    navController.navigate(DestinasiHomeKamar.route) {
+                        popUpTo(DestinasiHomeKamar.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+        composable(
+            route = "${DestinasiUpdateKamar.route}/{idkamar}",
+            arguments = listOf(navArgument("idkamar") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_kamar = backStackEntry.arguments?.getString("idkamar") ?: return@composable
+            UpdateKamarScreen(
+                id_kamar = id_kamar,
                 navigateBack = { navController.navigateUp() }
             )
         }
