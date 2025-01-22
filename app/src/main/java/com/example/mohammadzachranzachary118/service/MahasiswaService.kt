@@ -25,9 +25,9 @@ interface MahasiswaService {
     @POST("insertmahasiswa.php")
     suspend fun insertMahasiswa(@Body mahasiswa: Mahasiswa)
 
-    @PUT("updatemahasiswa.php/{id_mahasiswa}")
-    suspend fun updateMahasiswa(@Path("id_mahasiswa") id_mahasiswa: String, @Body mahasiswa: Mahasiswa)
+    @PUT("updatemahasiswa.php/")
+    suspend fun updateMahasiswa(@Query("id_mahasiswa") id_mahasiswa: String, @Body mahasiswa: Mahasiswa)
 
-    @DELETE("deletemahasiswa.php/{id_mahasiswa}")
-    suspend fun deleteMahasiswa(@Path("id_mahasiswa") id_mahasiswa: String): retrofit2.Response<Void>
+    @DELETE("deletemahasiswa.php")
+    suspend fun deleteMahasiswa(@Query("id_mahasiswa") id_mahasiswa: String): retrofit2.Response<Void>
 }
