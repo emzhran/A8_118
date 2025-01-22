@@ -13,6 +13,10 @@ import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.DetailKamarViewM
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.HomeKamarViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.InsertKamarViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.UpdateKamarViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.DetailMahasiswaViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.HomeMahasiswaViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.InsertMahasiswaViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.UpdateMahasiswaViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
@@ -24,6 +28,11 @@ object PenyediaViewModel {
         initializer { UpdateKamarViewModel(dormitoryApp().container.kamarRepository,dormitoryApp().container.bangunanRepository) }
         initializer { DetailKamarViewModel(createSavedStateHandle(),
             dormitoryApp().container.kamarRepository) }
+        initializer { HomeMahasiswaViewModel(dormitoryApp().container.mahasiswaRepository) }
+        initializer { InsertMahasiswaViewModel(dormitoryApp().container.mahasiswaRepository,dormitoryApp().container.kamarRepository) }
+        initializer { UpdateMahasiswaViewModel(dormitoryApp().container.mahasiswaRepository,dormitoryApp().container.kamarRepository) }
+        initializer { DetailMahasiswaViewModel(createSavedStateHandle(),
+            dormitoryApp().container.mahasiswaRepository) }
         }
     }
 
