@@ -33,6 +33,7 @@ object MainScreen: DestinasiNavigasi {
 
 @Composable
 fun MainMenuScreen(
+    onNavigateToMahasiswa: () -> Unit,
     onNavigateToBangunan: () -> Unit,
     onNavigateToKamar: () -> Unit,
     modifier: Modifier = Modifier
@@ -65,7 +66,16 @@ fun MainMenuScreen(
                     .size(300.dp)
                     .padding(bottom = 24.dp)
             )
-
+            Button(
+                onClick = { onNavigateToMahasiswa() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.menu)
+                )
+            ) {
+                Text(text = "Mahasiswa",
+                    color = Color.White)
+            }
             Button(
                 onClick = { onNavigateToBangunan() },
                 modifier = Modifier.fillMaxWidth(),
