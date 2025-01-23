@@ -17,6 +17,7 @@ import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.DetailMahasi
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.HomeMahasiswaViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.InsertMahasiswaViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.UpdateMahasiswaViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.pembayaran.InsertPembayaranViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
@@ -33,6 +34,7 @@ object PenyediaViewModel {
         initializer { UpdateMahasiswaViewModel(dormitoryApp().container.mahasiswaRepository,dormitoryApp().container.kamarRepository) }
         initializer { DetailMahasiswaViewModel(createSavedStateHandle(),
             dormitoryApp().container.mahasiswaRepository) }
+        initializer { InsertPembayaranViewModel(dormitoryApp().container.pembayaranRepository,dormitoryApp().container.mahasiswaRepository) }
         }
     }
 
