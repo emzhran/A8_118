@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.network.HttpException
 import com.example.mohammadzachranzachary118.model.Kamar
 import com.example.mohammadzachranzachary118.repository.KamarRepository
@@ -37,5 +38,16 @@ class HomeKamarViewModel (private val kmr: KamarRepository): ViewModel(){
             }
         }
     }
-
+    fun deletKamar(id_kamar:String){
+        viewModelScope.launch {
+            try {
+                kmr.deleteKamar(id_kamar)
+                getKamar()
+            }catch (e: java.io.IOException){
+                HomeKamarState.Error
+            }catch (e: HttpException){
+                HomeKamarState.Error
+            }
+        }
+    }
 }

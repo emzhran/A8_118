@@ -65,6 +65,7 @@ object DestinasiHomeKamar: DestinasiNavigasi {
 fun HomeKamarScreen(
     navigateBack: () -> Unit,
     navigateToItemEntry: () -> Unit,
+    onNavigateToUpdate: (Kamar)-> Unit,
     onDetailClick: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: HomeKamarViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -109,7 +110,9 @@ fun HomeKamarScreen(
             homeKamarState = viewModel.kamarHomeState,
             retryAction = { viewModel.getKamar() },
             modifier = Modifier.padding(innerPadding),
-            onDetailClick = onDetailClick
+            onDetailClick = onDetailClick,
+            onUpdateClick = onNavigateToUpdate,
+            onDeleteClick = {kamar -> viewModel.deletKamar(kamar.idkamar)}
         )
     }
 }
@@ -119,7 +122,9 @@ fun HomeStatusKamar(
     homeKamarState: HomeKamarState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit
+    onDetailClick: (String) -> Unit,
+    onUpdateClick: (Kamar) -> Unit,
+    onDeleteClick: (Kamar) -> Unit
 ) {
     when (homeKamarState) {
         is HomeKamarState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
@@ -134,7 +139,9 @@ fun HomeStatusKamar(
                     modifier = modifier.fillMaxWidth(),
                     onDetailClick = {
                         onDetailClick(it.idkamar)
-                    }
+                    },
+                    onUpdateClick = onUpdateClick,
+                    onDeleteClick = onDeleteClick
                 )
             }
         }
@@ -177,7 +184,9 @@ fun OnError(retryAction:()->Unit, modifier: Modifier = Modifier){
 fun KamarLayout(
     kamar: List<Kamar>,
     modifier: Modifier = Modifier,
-    onDetailClick: (Kamar) -> Unit
+    onDetailClick: (Kamar) -> Unit,
+    onUpdateClick: (Kamar) -> Unit,
+    onDeleteClick: (Kamar) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -189,7 +198,9 @@ fun KamarLayout(
                 kamar = kmr,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onDetailClick(kmr) }
+                    .clickable { onDetailClick(kmr) },
+                onUpdateClick = onUpdateClick,
+                onDeleteClick = onDeleteClick
             )
         }
     }
@@ -198,6 +209,8 @@ fun KamarLayout(
 @Composable
 fun KamarCard(
     kamar: Kamar,
+    onUpdateClick : (Kamar) ->Unit,
+    onDeleteClick : (Kamar) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -232,6 +245,17 @@ fun KamarCard(
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = { onUpdateClick(kamar) }) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+                }
+                IconButton(onClick = { onDeleteClick(kamar) }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Hapus")
+                }
             }
         }
     }

@@ -44,17 +44,4 @@ class DetailKamarViewModel(
             }
         }
     }
-
-
-    fun deletKamar(id_kamar:String){
-        viewModelScope.launch {
-            try {
-                kmr.deleteKamar(id_kamar)
-            }catch (e: IOException){
-                HomeKamarState.Error
-            }catch (e: HttpException){
-                HomeKamarState.Error
-            }
-        }
-    }
 }

@@ -60,7 +60,6 @@ fun DetailKamarScreen(
     navController: NavHostController
 ) {
     val kamarState by viewModel.detailKamarState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect (Unit){
@@ -76,29 +75,10 @@ fun DetailKamarScreen(
                 scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate("update_kamar/$id_kamar")
-                },
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp),
-                containerColor = colorResource(R.color.primary),
-                contentColor = Color.White
-            ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Update Kamar")
-            }
         }
     ) { innerPadding ->
         DetailBodyKamar(
             detailKamarState = kamarState,
-            onDeleteClick = {
-                coroutineScope.launch {
-                    viewModel.deletKamar(id_kamar)
-                    navigateBack()
-                }
-            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -110,7 +90,6 @@ fun DetailKamarScreen(
 @Composable
 fun DetailBodyKamar(
     detailKamarState: DetailKamarState,
-    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (detailKamarState) {
@@ -135,16 +114,6 @@ fun DetailBodyKamar(
                 ComponentDetailKamar(judul = "Kapasitas", isinya = kamar.kapasitas)
                 ComponentDetailKamar(judul = "Status Kamar", isinya = kamar.statuskamar)
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = onDeleteClick,
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.primary)
-                    )
-                ) {
-                    Text(text = "Hapus")
-                }
             }
         }
     }
