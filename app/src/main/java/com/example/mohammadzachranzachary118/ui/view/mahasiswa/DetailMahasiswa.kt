@@ -12,6 +12,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -88,6 +90,9 @@ fun DetailMahasiswaScreen(
     ) { innerPadding ->
         DetailBodyMahasiswa(
             detailMahasiswaState = mahasiswaState,
+            onPembayaranClick = {
+                navController.navigate("insert_pembayaran/$id_mahasiswa")
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -99,6 +104,7 @@ fun DetailMahasiswaScreen(
 @Composable
 fun DetailBodyMahasiswa(
     detailMahasiswaState: DetailMahasiswaState,
+    onPembayaranClick : ()->Unit,
     modifier: Modifier = Modifier
 ) {
     when (detailMahasiswaState) {
@@ -123,7 +129,19 @@ fun DetailBodyMahasiswa(
                 ComponentDetailMahasiswa(judul = "Email", isinya = mahasiswa.email)
                 ComponentDetailMahasiswa(judul = "Nomor Telepon", isinya = mahasiswa.nomortelepon)
                 ComponentDetailMahasiswa(judul = "Kamar ID", isinya = mahasiswa.idkamar)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = onPembayaranClick,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.primary)
+                    )
+                ) {
+                    Text(text = "Tambah Pembayaran")
+                }
             }
         }
     }
