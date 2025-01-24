@@ -30,23 +30,17 @@ import com.example.mohammadzachranzachary118.ui.view.mahasiswa.DetailMahasiswaSc
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.EntryMahasiswaScreen
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.HomeMahasiswaScreen
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.UpdateMahasiswaScreen
-import com.example.mohammadzachranzachary118.ui.view.screen.MainMenuScreen
-import com.example.mohammadzachranzachary118.ui.view.screen.MainScreen
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiHomePembayaran
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiInsertPembayaran
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.EntryPembayaranScreen
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = MainScreen.route,
+        startDestination = DestinasiHomeMahasiswa.route,
         modifier = Modifier
     ) {
-        composable(MainScreen.route) {
-            MainMenuScreen(
-                onNavigateToMahasiswa = {navController.navigate(DestinasiHomeMahasiswa.route)},
-                onNavigateToBangunan = { navController.navigate(DestinasiHome.route) },
-                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)}
-            )
-        }
         composable(DestinasiHome.route) {
             HomeBangunanScreen(
                 navigateBack = { navController.navigateUp() },
@@ -109,10 +103,10 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             )
         }
         composable(
-            route = "${DestinasiUpdateKamar.route}/{idkamar}",
-            arguments = listOf(navArgument("idkamar") { type = NavType.StringType })
+            route = "${DestinasiUpdateKamar.route}/{id_kamar}",
+            arguments = listOf(navArgument("id_kamar") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id_kamar = backStackEntry.arguments?.getString("idkamar") ?: return@composable
+            val id_kamar = backStackEntry.arguments?.getString("id_kamar") ?: return@composable
             UpdateKamarScreen(
                 id_kamar = id_kamar,
                 navigateBack = { navController.navigateUp() }
@@ -124,7 +118,10 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToItemEntry = { navController.navigate(DestinasiInsertMahasiswa.route) },
                 onDetailClick = { id_mahasiswa ->
                     navController.navigate("${DestinasiDetailMahasiswa.route}/$id_mahasiswa")
-                }
+                },
+                onNavigateToBangunan = {navController.navigate(DestinasiHome.route)},
+                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)},
+                onNavigateToPembayaran = {navController.navigate(DestinasiHomePembayaran.route)}
             )
         }
         composable(
@@ -157,6 +154,16 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         ) { backStackEntry ->
             val id_mahasiswa = backStackEntry.arguments?.getString("id_mahasiswa") ?: return@composable
             UpdateMahasiswaScreen(
+                id_mahasiswa = id_mahasiswa,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = "${DestinasiInsertPembayaran.route}/{id_pembayaran}",
+            arguments = listOf(navArgument("id_pembayaran") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_mahasiswa = backStackEntry.arguments?.getString("id_pembayaran") ?: return@composable
+            EntryPembayaranScreen(
                 id_mahasiswa = id_mahasiswa,
                 navigateBack = { navController.navigateUp() }
             )

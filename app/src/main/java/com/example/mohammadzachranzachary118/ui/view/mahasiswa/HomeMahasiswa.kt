@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mohammadzachranzachary118.R
 import com.example.mohammadzachranzachary118.model.Mahasiswa
+import com.example.mohammadzachranzachary118.ui.customwidget.BottomAppBar
 import com.example.mohammadzachranzachary118.ui.customwidget.TopAppBarr
 import com.example.mohammadzachranzachary118.ui.navigasi.DestinasiNavigasi
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.HomeMahasiswaState
@@ -65,6 +66,9 @@ fun HomeMahasiswaScreen(
     navigateBack: () -> Unit,
     navigateToItemEntry: () -> Unit,
     onDetailClick: (String) -> Unit = {},
+    onNavigateToBangunan: () -> Unit,
+    onNavigateToKamar: () -> Unit,
+    onNavigateToPembayaran: ()-> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeMahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -79,12 +83,19 @@ fun HomeMahasiswaScreen(
         topBar = {
             TopAppBarr(
                 title = DestinasiHomeMahasiswa.titleRes,
-                canNavigateBack = true,
+                canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack,
                 onRefresh = {
                     viewModel.getMhs()
                 }
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
+                onKamarClick = onNavigateToKamar,
+                onBangunanClick = onNavigateToBangunan,
+                onPembayaranClick = onNavigateToPembayaran
             )
         },
         floatingActionButton = {
