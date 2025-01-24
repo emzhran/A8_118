@@ -56,8 +56,7 @@ fun DetailKamarScreen(
     navigateBack: () -> Unit,
     id_kamar: String,
     modifier: Modifier = Modifier,
-    viewModel: DetailKamarViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    navController: NavHostController
+    viewModel: DetailKamarViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val kamarState by viewModel.detailKamarState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

@@ -94,6 +94,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 },
                 navigateBack = { navController.navigateUp() },
                 navigateToItemEntry = { navController.navigate(DestinasiInsertkamar.route) },
+                onNavigateToUpdate = { kamar ->
+                    navController.navigate("${DestinasiUpdateKamar.route}/${kamar.idkamar}")
+                }
             )
         }
         composable(
@@ -103,8 +106,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             val id_kamar = backStackEntry.arguments?.getString("id_kamar") ?: return@composable
             DetailKamarScreen(
                 id_kamar = id_kamar,
-                navigateBack = { navController.navigateUp() },
-                navController = navController
+                navigateBack = { navController.navigateUp() }
             )
         }
         composable(DestinasiInsertkamar.route) {
