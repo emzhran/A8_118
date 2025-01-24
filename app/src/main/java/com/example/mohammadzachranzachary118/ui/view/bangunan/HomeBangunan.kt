@@ -1,6 +1,7 @@
 package com.example.mohammadzachranzachary118.ui.view.bangunan
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ fun HomeBangunanScreen(
     navigateToItemEntry: () -> Unit,
     navigateToUpdate: (Bangunan) -> Unit,
     modifier: Modifier = Modifier,
+    onDetailClick: (String) -> Unit,
     viewModel: HomeBangunanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -109,7 +111,8 @@ fun HomeBangunanScreen(
             retryAction = { viewModel.getBangunan() },
             modifier = Modifier.padding(innerPadding),
             onDeleteClick = { bangunan -> viewModel.deletBangunan(bangunan.idbangunan) },
-            onUpdateClick = navigateToUpdate
+            onUpdateClick = navigateToUpdate,
+            onDetailClick = onDetailClick
         )
     }
 }
@@ -120,7 +123,8 @@ fun HomeStatusBangunan(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDeleteClick: (Bangunan) -> Unit,
-    onUpdateClick: (Bangunan) -> Unit
+    onUpdateClick: (Bangunan) -> Unit,
+    onDetailClick: (String) -> Unit
 ) {
     when (homeBangunanState) {
         is HomeBangunanState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
@@ -134,7 +138,10 @@ fun HomeStatusBangunan(
                     bangunan = homeBangunanState.bangunan,
                     modifier = modifier.fillMaxWidth(),
                     onDeleteClick = onDeleteClick,
-                    onUpdateClick = onUpdateClick
+                    onUpdateClick = onUpdateClick,
+                    onDetailClick = {
+                        onDetailClick(it.idbangunan)
+                    }
                 )
             }
         }
@@ -178,7 +185,8 @@ fun BangunanLayout(
     bangunan: List<Bangunan>,
     modifier: Modifier = Modifier,
     onDeleteClick: (Bangunan) -> Unit,
-    onUpdateClick: (Bangunan) -> Unit
+    onUpdateClick: (Bangunan) -> Unit,
+    onDetailClick: (Bangunan) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -189,7 +197,8 @@ fun BangunanLayout(
             BangunanCard(
                 bangunan = bgn,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(bgn) },
                 onDeleteClick = onDeleteClick,
                 onUpdateClick = onUpdateClick
             )
@@ -221,18 +230,6 @@ fun BangunanCard(
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(
                     text = bangunan.namabangunan,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(imageVector = Icons.Filled.Info, contentDescription = "")
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(
-                    text = bangunan.jumlahlantai,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )

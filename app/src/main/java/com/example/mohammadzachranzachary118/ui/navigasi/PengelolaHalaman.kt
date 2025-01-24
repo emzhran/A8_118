@@ -8,9 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.mohammadzachranzachary118.ui.view.bangunan.DestinasiDetailBangunan
 import com.example.mohammadzachranzachary118.ui.view.bangunan.DestinasiEntry
 import com.example.mohammadzachranzachary118.ui.view.bangunan.DestinasiHome
 import com.example.mohammadzachranzachary118.ui.view.bangunan.DestinasiUpdate
+import com.example.mohammadzachranzachary118.ui.view.bangunan.DetailBangunanScreen
 import com.example.mohammadzachranzachary118.ui.view.bangunan.EntryBangunanScreen
 import com.example.mohammadzachranzachary118.ui.view.bangunan.HomeBangunanScreen
 import com.example.mohammadzachranzachary118.ui.view.bangunan.UpdateBangunanScreen
@@ -47,6 +49,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
                 navigateToUpdate = { bangunan ->
                     navController.navigate("${DestinasiUpdate.route}/${bangunan.idbangunan}")
+                },
+                onDetailClick = {id_bangunan->
+                    navController.navigate("${DestinasiDetailBangunan.route}/$id_bangunan")
                 }
             )
         }
@@ -69,6 +74,17 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             UpdateBangunanScreen(
                 id_bangunan = id_bangunan,
                 navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = "${DestinasiDetailBangunan.route}/{id_bangunan}",
+            arguments = listOf(navArgument("id_bangunan"){type = NavType.StringType})
+        ){backStackEntry ->
+            val id_bangunan =backStackEntry.arguments?.getString("id_bangunan") ?: return@composable
+            DetailBangunanScreen(
+                id_bangunan = id_bangunan,
+                navigateBack = {navController.navigateUp()},
+                navController = navController
             )
         }
         composable(DestinasiHomeKamar.route) {

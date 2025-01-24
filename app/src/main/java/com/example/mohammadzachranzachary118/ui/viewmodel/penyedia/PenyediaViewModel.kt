@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.mohammadzachranzachary118.DormitoryApplication
+import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.DetailBangunanViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.HomeBangunanViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.InsertBangunanViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.UpdateBangunanViewModel
@@ -24,6 +25,8 @@ object PenyediaViewModel {
         initializer { HomeBangunanViewModel(dormitoryApp().container.bangunanRepository) }
         initializer { InsertBangunanViewModel(dormitoryApp().container.bangunanRepository) }
         initializer { UpdateBangunanViewModel(dormitoryApp().container.bangunanRepository) }
+        initializer { DetailBangunanViewModel(createSavedStateHandle(),
+            dormitoryApp().container.bangunanRepository) }
         initializer { HomeKamarViewModel(dormitoryApp().container.kamarRepository) }
         initializer { InsertKamarViewModel(dormitoryApp().container.kamarRepository,dormitoryApp().container.bangunanRepository) }
         initializer { UpdateKamarViewModel(dormitoryApp().container.kamarRepository,dormitoryApp().container.bangunanRepository) }
