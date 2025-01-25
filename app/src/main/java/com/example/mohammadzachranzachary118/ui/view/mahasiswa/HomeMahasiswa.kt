@@ -140,6 +140,7 @@ fun HomeMahasiswaScreen(
                 mahasiswaToDelete?.let {
                     viewModel.deleteMhs(it.idmahasiswa)
                 }
+                showDeleteConfirmationDialog = false
             },
             onDeleteCancel = {
                 showDeleteConfirmationDialog = false
