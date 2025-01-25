@@ -19,6 +19,9 @@ import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.HomeMahasisw
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.InsertMahasiswaViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.mahasiswa.UpdateMahasiswaViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.pembayaran.InsertPembayaranViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.pembayaran.DetailPembayaranViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.pembayaran.UpdatePembayaranViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.pembayaran.RiwayatPembayaranViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
@@ -38,6 +41,10 @@ object PenyediaViewModel {
         initializer { DetailMahasiswaViewModel(createSavedStateHandle(),
             dormitoryApp().container.mahasiswaRepository) }
         initializer { InsertPembayaranViewModel(dormitoryApp().container.pembayaranRepository,dormitoryApp().container.mahasiswaRepository) }
+        initializer { DetailPembayaranViewModel(createSavedStateHandle(),
+            dormitoryApp().container.pembayaranRepository) }
+        initializer { UpdatePembayaranViewModel(dormitoryApp().container.pembayaranRepository) }
+        initializer { RiwayatPembayaranViewModel(dormitoryApp().container.pembayaranRepository) }
         }
     }
 
