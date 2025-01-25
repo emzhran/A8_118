@@ -74,7 +74,6 @@ fun HomeMahasiswaScreen(
     onDetailClick: (String) -> Unit = {},
     onNavigateToBangunan: () -> Unit,
     onNavigateToKamar: () -> Unit,
-    onNavigateToPembayaran: ()-> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeMahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -103,8 +102,7 @@ fun HomeMahasiswaScreen(
         bottomBar = {
             BottomAppBar(
                 onKamarClick = onNavigateToKamar,
-                onBangunanClick = onNavigateToBangunan,
-                onPembayaranClick = onNavigateToPembayaran
+                onBangunanClick = onNavigateToBangunan
             )
         },
         floatingActionButton = {

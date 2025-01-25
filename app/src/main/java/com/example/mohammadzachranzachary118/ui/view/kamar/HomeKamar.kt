@@ -226,7 +226,7 @@ fun KamarCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.Home, contentDescription = "")
+                Icon(painter = painterResource(R.drawable.icons8_room_100), contentDescription = "")
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(
                     text = kamar.nokamar,
