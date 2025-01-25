@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,9 +33,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,6 +79,9 @@ fun HomeMahasiswaScreen(
     viewModel: HomeMahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var mahasiswaToDelete by remember { mutableStateOf<Mahasiswa?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.getMhs()
@@ -122,10 +131,55 @@ fun HomeMahasiswaScreen(
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onDeleteClick = { mahasiswa ->
-                viewModel.deleteMhs(mahasiswa.idmahasiswa)
+                mahasiswaToDelete = mahasiswa
+                showDeleteConfirmationDialog = true
             }
         )
     }
+    if (showDeleteConfirmationDialog && mahasiswaToDelete != null) {
+        DeleteConfirmationDialog(
+            onDeleteConfirm = {
+                mahasiswaToDelete?.let {
+                    viewModel.deleteMhs(it.idmahasiswa)
+                }
+            },
+            onDeleteCancel = {
+                showDeleteConfirmationDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun DeleteConfirmationDialog(
+    onDeleteConfirm: () -> Unit,
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = {
+            Text("Delete Data",
+            fontWeight = FontWeight.Bold)},
+        text = { Text("Apakah anda yakin ingin menghapus data mahasiswa?") },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = onDeleteCancel,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)){
+                Text(text = "Cancel")
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDeleteConfirm,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)) {
+                Text(text = "Yes")
+            }
+        }
+    )
 }
 
 @Composable

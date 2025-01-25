@@ -21,9 +21,6 @@ class HomeMahasiswaViewModel (private val mhs: MahasiswaRepository): ViewModel()
     var mahasiwaHomeState: HomeMahasiswaState by mutableStateOf(HomeMahasiswaState.Loading)
         private set
 
-    init {
-        getMhs()
-    }
 
     fun getMhs(){
         viewModelScope.launch {
