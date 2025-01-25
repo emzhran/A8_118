@@ -32,9 +32,14 @@ import com.example.mohammadzachranzachary118.ui.view.mahasiswa.DetailMahasiswaSc
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.EntryMahasiswaScreen
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.HomeMahasiswaScreen
 import com.example.mohammadzachranzachary118.ui.view.mahasiswa.UpdateMahasiswaScreen
-import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiHomePembayaran
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiDetailPembayaran
 import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiInsertPembayaran
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiRiwayat
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DestinasiUpdatePembayaran
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.DetailPembayaranScreen
 import com.example.mohammadzachranzachary118.ui.view.pembayaran.EntryPembayaranScreen
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.RiwayatPembayaranScreen
+import com.example.mohammadzachranzachary118.ui.view.pembayaran.UpdatePembayaranScreen
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()) {
@@ -138,8 +143,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     navController.navigate("${DestinasiDetailMahasiswa.route}/$id_mahasiswa")
                 },
                 onNavigateToBangunan = {navController.navigate(DestinasiHome.route)},
-                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)},
-                onNavigateToPembayaran = {navController.navigate(DestinasiHomePembayaran.route)}
+                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)}
             )
         }
         composable(
@@ -183,6 +187,49 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             val id_mahasiswa = backStackEntry.arguments?.getString("id_pembayaran") ?: return@composable
             EntryPembayaranScreen(
                 id_mahasiswa = id_mahasiswa,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = "${DestinasiInsertPembayaran.route}/{id_pembayaran}",
+            arguments = listOf(navArgument("id_pembayaran") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_mahasiswa = backStackEntry.arguments?.getString("id_pembayaran") ?: return@composable
+            EntryPembayaranScreen(
+                id_mahasiswa = id_mahasiswa,
+                navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = "${DestinasiRiwayat.route}/{id_mahasiswa}",
+            arguments = listOf(navArgument("id_mahasiswa") { type = NavType.StringType })
+        ) { backStackEntry ->
+            RiwayatPembayaranScreen(
+                id_mahasiswa = backStackEntry.arguments?.getString("id_mahasiswa") ?: "",
+                navigateBack = { navController.popBackStack() },
+                onDetailClick = { id_pembayaran ->
+                    navController.navigate("${DestinasiDetailPembayaran.route}/$id_pembayaran")
+                }
+            )
+        }
+        composable(
+            route = "${DestinasiDetailPembayaran.route}/{id_pembayaran}",
+            arguments = listOf(navArgument("id_pembayaran") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_pembayaran = backStackEntry.arguments?.getString("id_pembayaran") ?: return@composable
+            DetailPembayaranScreen(
+                id_pembayaran = id_pembayaran,
+                navigateBack = { navController.navigateUp() },
+                navController = navController
+            )
+        }
+        composable(
+            route = "${DestinasiUpdatePembayaran.route}/{id_pembayaran}",
+            arguments = listOf(navArgument("id_pembayaran") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id_pembayaran = backStackEntry.arguments?.getString("id_pembayaran") ?: return@composable
+            UpdatePembayaranScreen(
+                id_pembayaran = id_pembayaran,
                 navigateBack = { navController.navigateUp() }
             )
         }
