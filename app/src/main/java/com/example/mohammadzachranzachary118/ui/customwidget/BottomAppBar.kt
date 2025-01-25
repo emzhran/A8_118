@@ -1,6 +1,7 @@
 package com.example.mohammadzachranzachary118.ui.customwidget
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,8 +36,7 @@ import com.example.mohammadzachranzachary118.R
 fun BottomAppBar(
     modifier: Modifier = Modifier,
     onKamarClick: () -> Unit = {},
-    onBangunanClick: () -> Unit = {},
-    onPembayaranClick: () -> Unit = {}
+    onBangunanClick: () -> Unit = {}
 ) {
     BottomAppBar(
         containerColor = colorResource(R.color.primary),
@@ -82,21 +83,9 @@ fun BottomAppBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                IconButton(
-                    modifier = Modifier.size(40.dp),
-                    onClick = onBangunanClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = "Bangunan",
-                        tint = Color.White
-                    )
-                }
-                Text(
-                    text = "Bangunan",
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                Image(
+                    painter = painterResource(R.drawable.umy),
+                    contentDescription = ""
                 )
             }
         }
@@ -113,16 +102,16 @@ fun BottomAppBar(
             ) {
                 IconButton(
                     modifier = Modifier.size(40.dp),
-                    onClick = onPembayaranClick
+                    onClick = onBangunanClick
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "Pembayaran",
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "Bangunan",
                         tint = Color.White
                     )
                 }
                 Text(
-                    text = "Pembayaran",
+                    text = "Bangunan",
                     color = Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
