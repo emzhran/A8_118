@@ -93,6 +93,9 @@ fun DetailMahasiswaScreen(
             onPembayaranClick = {
                 navController.navigate("insert_pembayaran/$id_mahasiswa")
             },
+            onRiwayatClick = {
+                navController.navigate("riwayat_pembayaran/$id_mahasiswa")
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -105,6 +108,7 @@ fun DetailMahasiswaScreen(
 fun DetailBodyMahasiswa(
     detailMahasiswaState: DetailMahasiswaState,
     onPembayaranClick : ()->Unit,
+    onRiwayatClick : ()->Unit,
     modifier: Modifier = Modifier
 ) {
     when (detailMahasiswaState) {
@@ -141,6 +145,18 @@ fun DetailBodyMahasiswa(
                     )
                 ) {
                     Text(text = "Tambah Pembayaran")
+                }
+                Button(
+                    onClick = onRiwayatClick,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.primary)
+                    )
+                ) {
+                    Text(text = "Riwayat Pembayaran")
                 }
             }
         }
