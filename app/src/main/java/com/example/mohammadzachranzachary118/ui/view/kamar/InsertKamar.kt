@@ -70,7 +70,7 @@ fun EntryKamarScreen(
             TopAppBarr(
                 title = DestinasiInsertkamar.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

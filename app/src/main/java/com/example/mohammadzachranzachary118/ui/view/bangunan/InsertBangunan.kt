@@ -62,7 +62,7 @@ fun EntryBangunanScreen(
             TopAppBarr(
                 title = DestinasiEntry.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

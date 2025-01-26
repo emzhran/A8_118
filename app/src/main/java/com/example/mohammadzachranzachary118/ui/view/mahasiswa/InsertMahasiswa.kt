@@ -70,7 +70,7 @@ fun EntryMahasiswaScreen(
             TopAppBarr(
                 title = DestinasiInsertMahasiswa.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

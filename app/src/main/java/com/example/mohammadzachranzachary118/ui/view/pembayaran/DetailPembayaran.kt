@@ -70,7 +70,7 @@ fun DetailPembayaranScreen(
             TopAppBarr(
                 title = DestinasiDetailPembayaran.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         },

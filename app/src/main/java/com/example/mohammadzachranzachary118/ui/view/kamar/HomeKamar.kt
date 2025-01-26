@@ -76,7 +76,7 @@ fun HomeKamarScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeKamarViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var kamarToDelete by remember { mutableStateOf<Kamar?>(null) }
 
@@ -84,16 +84,17 @@ fun HomeKamarScreen(
         viewModel.getKamar()
     }
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             TopAppBarr(
                 title = DestinasiHomeKamar.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack,
+                showRefresh = true,
                 onRefresh = {
                     viewModel.getKamar()
-                }
+                },
+
             )
         },
         floatingActionButton = {

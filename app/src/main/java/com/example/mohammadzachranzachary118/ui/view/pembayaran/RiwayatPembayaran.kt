@@ -77,8 +77,8 @@ fun RiwayatPembayaranScreen(
             TopAppBarr(
                 title = DestinasiRiwayat.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack,
+                showRefresh = true,
                 onRefresh = {
                     viewModel.getRiwayat(id_mahasiswa)
                 }

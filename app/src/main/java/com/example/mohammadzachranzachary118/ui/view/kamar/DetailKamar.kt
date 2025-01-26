@@ -71,7 +71,7 @@ fun DetailKamarScreen(
             TopAppBarr(
                 title = DestinasiDetailKamar.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

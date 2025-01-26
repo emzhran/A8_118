@@ -76,7 +76,6 @@ fun HomeBangunanScreen(
     onDetailClick: (String) -> Unit,
     viewModel: HomeBangunanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var bangunanToDelete by remember { mutableStateOf<Bangunan?>(null) }
 
@@ -84,13 +83,13 @@ fun HomeBangunanScreen(
         viewModel.getBangunan()
     }
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             TopAppBarr(
                 title = DestinasiHome.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack,
+                showRefresh = true,
                 onRefresh = {
                     viewModel.getBangunan()
                 }

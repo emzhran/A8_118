@@ -68,7 +68,7 @@ fun UpdateBangunanScreen(
             TopAppBarr(
                 DestinasiUpdate.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

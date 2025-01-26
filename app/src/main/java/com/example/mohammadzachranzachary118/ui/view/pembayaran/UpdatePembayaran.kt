@@ -79,7 +79,7 @@ fun UpdatePembayaranScreen(
             TopAppBarr(
                 DestinasiUpdatePembayaran.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

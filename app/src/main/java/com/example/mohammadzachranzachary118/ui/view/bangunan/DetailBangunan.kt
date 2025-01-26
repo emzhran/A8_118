@@ -62,7 +62,7 @@ fun DetailBangunanScreen(
             TopAppBarr(
                 title = DestinasiDetailBangunan.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

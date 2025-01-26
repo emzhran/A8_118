@@ -75,7 +75,7 @@ fun UpdateKamarScreen(
             TopAppBarr(
                 DestinasiUpdateKamar.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }

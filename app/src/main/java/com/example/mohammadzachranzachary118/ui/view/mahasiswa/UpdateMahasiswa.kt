@@ -75,7 +75,7 @@ fun UpdateMahasiswaScreen(
             TopAppBarr(
                 DestinasiUpdateMahasiswa.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
+                showRefresh = false,
                 navigateUp = navigateBack
             )
         }
