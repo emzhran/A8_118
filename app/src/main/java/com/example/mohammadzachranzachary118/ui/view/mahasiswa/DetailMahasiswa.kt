@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -75,24 +78,22 @@ fun DetailMahasiswaScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = {
-                    navController.navigate("update_mahasiswa/$id_mahasiswa")
+                    navController.navigate("insert_pembayaran/$id_mahasiswa")
                 },
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp),
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier.padding(15.dp),
                 containerColor = colorResource(R.color.primary),
                 contentColor = Color.White
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Update Mahasiswa")
+                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Insert Pembayaran")
+                Text(text = "Tambah Pembayaran")
             }
         }
     ) { innerPadding ->
         DetailBodyMahasiswa(
             detailMahasiswaState = mahasiswaState,
-            onPembayaranClick = {
-                navController.navigate("insert_pembayaran/$id_mahasiswa")
-            },
             onRiwayatClick = {
                 navController.navigate("riwayat_pembayaran/$id_mahasiswa")
             },
@@ -107,7 +108,6 @@ fun DetailMahasiswaScreen(
 @Composable
 fun DetailBodyMahasiswa(
     detailMahasiswaState: DetailMahasiswaState,
-    onPembayaranClick : ()->Unit,
     onRiwayatClick : ()->Unit,
     modifier: Modifier = Modifier
 ) {
@@ -134,18 +134,6 @@ fun DetailBodyMahasiswa(
                 ComponentDetailMahasiswa(judul = "Nomor Telepon", isinya = mahasiswa.nomortelepon)
                 ComponentDetailMahasiswa(judul = "Kamar ID", isinya = mahasiswa.idkamar)
                 Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = onPembayaranClick,
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.primary)
-                    )
-                ) {
-                    Text(text = "Tambah Pembayaran")
-                }
                 Button(
                     onClick = onRiwayatClick,
                     shape = MaterialTheme.shapes.small,

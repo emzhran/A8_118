@@ -143,7 +143,10 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     navController.navigate("${DestinasiDetailMahasiswa.route}/$id_mahasiswa")
                 },
                 onNavigateToBangunan = {navController.navigate(DestinasiHome.route)},
-                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)}
+                onNavigateToKamar = {navController.navigate(DestinasiHomeKamar.route)},
+                onNavigateToUpdate = { mhs ->
+                    navController.navigate("${DestinasiUpdateMahasiswa.route}/${mhs.idmahasiswa}")
+                }
             )
         }
         composable(

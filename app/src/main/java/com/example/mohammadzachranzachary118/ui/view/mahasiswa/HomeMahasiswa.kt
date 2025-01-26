@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
@@ -74,6 +75,7 @@ fun HomeMahasiswaScreen(
     onDetailClick: (String) -> Unit = {},
     onNavigateToBangunan: () -> Unit,
     onNavigateToKamar: () -> Unit,
+    onNavigateToUpdate: (Mahasiswa) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeMahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -131,7 +133,8 @@ fun HomeMahasiswaScreen(
             onDeleteClick = { mahasiswa ->
                 mahasiswaToDelete = mahasiswa
                 showDeleteConfirmationDialog = true
-            }
+            },
+            onUpdateClick = onNavigateToUpdate
         )
     }
     if (showDeleteConfirmationDialog && mahasiswaToDelete != null) {
@@ -187,7 +190,8 @@ fun HomeStatusMahasiswa(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit,
-    onDeleteClick: (Mahasiswa) -> Unit
+    onDeleteClick: (Mahasiswa) -> Unit,
+    onUpdateClick: (Mahasiswa) -> Unit
 ) {
     when (homeMahasiswaState) {
         is HomeMahasiswaState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
@@ -200,8 +204,9 @@ fun HomeStatusMahasiswa(
                 MahasiswaLayout(
                     mahasiswa = homeMahasiswaState.mahasiswa,
                     modifier = modifier.fillMaxWidth(),
-                    onDetailClick = onDetailClick,
-                    onDeleteClick = onDeleteClick
+                    onDetailClick = {onDetailClick(it.idmahasiswa)},
+                    onDeleteClick = onDeleteClick,
+                    onUpdateClick = onUpdateClick
                 )
             }
         }
@@ -244,8 +249,9 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 fun MahasiswaLayout(
     mahasiswa: List<Mahasiswa>,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit,
-    onDeleteClick: (Mahasiswa) -> Unit
+    onDetailClick: (Mahasiswa) -> Unit,
+    onDeleteClick: (Mahasiswa) -> Unit,
+    onUpdateClick: (Mahasiswa) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -257,8 +263,9 @@ fun MahasiswaLayout(
                 mahasiswa = mhs,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onDetailClick(mhs.idmahasiswa) },
-                onDeleteClick = onDeleteClick
+                    .clickable { onDetailClick(mhs) },
+                onDeleteClick = onDeleteClick,
+                onUpdateClick = onUpdateClick
             )
         }
     }
@@ -268,6 +275,7 @@ fun MahasiswaLayout(
 fun MahasiswaCard(
     mahasiswa: Mahasiswa,
     onDeleteClick: (Mahasiswa) -> Unit,
+    onUpdateClick: (Mahasiswa) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -317,6 +325,9 @@ fun MahasiswaCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
+                IconButton(onClick = { onUpdateClick(mahasiswa) }) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+                }
                 IconButton(onClick = { onDeleteClick(mahasiswa) }) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Hapus")
                 }
