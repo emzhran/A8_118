@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -51,6 +56,7 @@ fun UpdateBangunanScreen(
     val bangunanState = viewModel.updateBangunanState
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(id_bangunan) {
         viewModel.getBangunanById(id_bangunan)
@@ -74,12 +80,42 @@ fun UpdateBangunanScreen(
                 coroutineScope.launch {
                     viewModel.updateBangunan()
                     navigateBack()
+                    showDialog = true
                 }
             },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
+        )
+    }
+    if (showDialog) {
+        LaunchedEffect(showDialog) {
+            kotlinx.coroutines.delay(5000)
+        }
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            containerColor = colorResource(R.color.primary),
+            title = {
+                Text(
+                    "Berhasil",
+                    color = Color.White
+                )
+            },
+            text = {
+                Text(
+                    "Berhasil update data.",
+                    color = Color.White
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary))
+                ) {
+                    Text("OK", color = Color.White)
+                }
+            }
         )
     }
 }

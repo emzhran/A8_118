@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -66,6 +67,7 @@ fun UpdatePembayaranScreen(
     val pembayaranState = viewModel.updatePembayaranState
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(id_pembayaran) {
         viewModel.getPembayaranById(id_pembayaran)
@@ -89,12 +91,42 @@ fun UpdatePembayaranScreen(
                 coroutineScope.launch {
                     viewModel.updatePembayaran()
                     navigateBack()
+                    showDialog = true
                 }
             },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
+        )
+    }
+    if (showDialog) {
+        LaunchedEffect(showDialog) {
+            kotlinx.coroutines.delay(5000)
+        }
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            containerColor = colorResource(R.color.primary),
+            title = {
+                Text(
+                    "Berhasil",
+                    color = Color.White
+                )
+            },
+            text = {
+                Text(
+                    "Berhasil update data.",
+                    color = Color.White
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary))
+                ) {
+                    Text("OK", color = Color.White)
+                }
+            }
         )
     }
 }
