@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,9 +34,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,6 +77,8 @@ fun HomeKamarScreen(
     viewModel: HomeKamarViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var kamarToDelete by remember { mutableStateOf<Kamar?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.getKamar()
@@ -112,10 +120,59 @@ fun HomeKamarScreen(
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onUpdateClick = onNavigateToUpdate,
-            onDeleteClick = {kamar -> viewModel.deletKamar(kamar.idkamar)}
+            onDeleteClick = {kamar ->
+                kamarToDelete = kamar
+                showDeleteConfirmationDialog = true
+            }
         )
+        if (showDeleteConfirmationDialog && kamarToDelete != null) {
+            DeleteConfirmationDialog(
+                onDeleteConfirm = {
+                    kamarToDelete?.let {
+                        viewModel.deletKamar(it.idkamar)
+                    }
+                    showDeleteConfirmationDialog = false
+                },
+                onDeleteCancel = {
+                    showDeleteConfirmationDialog = false
+                }
+            )
+        }
     }
 }
+
+@Composable
+fun DeleteConfirmationDialog(
+    onDeleteConfirm: () -> Unit,
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = {
+            Text("Delete Data",
+                fontWeight = FontWeight.Bold)},
+        text = { Text("Apakah anda yakin ingin menghapus data kamar?") },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = onDeleteCancel,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)){
+                Text(text = "Cancel")
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDeleteConfirm,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)) {
+                Text(text = "Yes")
+            }
+        }
+    )
+}
+
 
 @Composable
 fun HomeStatusKamar(
