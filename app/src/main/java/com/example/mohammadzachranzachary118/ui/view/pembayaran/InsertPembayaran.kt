@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -65,6 +66,7 @@ fun EntryPembayaranScreen(
 
 ){
 
+    var showDialog by remember { mutableStateOf(false) }
     LaunchedEffect(id_mahasiswa) {
         viewModel.getMahasiswaById(id_mahasiswa)
     }
@@ -88,12 +90,39 @@ fun EntryPembayaranScreen(
                 coroutineScope.launch {
                     viewModel.insertPembayaran()
                     navigateBack()
+                    showDialog = true
                 }
             },
             modifier = Modifier
                 .padding(innerpadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
+        )
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            containerColor = colorResource(R.color.primary),
+            title = {
+                Text(
+                    "Berhasil",
+                    color = Color.White
+                )
+            },
+            text = {
+                Text(
+                    "Data berhasil disimpan.",
+                    color = Color.White
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary))
+                ) {
+                    Text("OK", color = Color.White)
+                }
+            }
         )
     }
 }
