@@ -23,19 +23,26 @@ fun TopAppBarr(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior?=null,
     navigateUp:()->Unit={},
-    onRefresh:()->Unit={}
+    onRefresh:()->Unit={},
+    showRefresh: Boolean
 ){
     CenterAlignedTopAppBar(
         title = { Text(title, color = Color.White) },
         actions = {
-            Icon(imageVector = Icons.Default.Refresh, contentDescription = "", tint = Color.White, modifier = Modifier.clickable {
-                onRefresh()
-            })
+            if (showRefresh) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "",
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        onRefresh()
+                    }
+                )
+            }
         },
         modifier = modifier,
-        scrollBehavior = scrollBehavior, navigationIcon = {
+        navigationIcon = {
             if (canNavigateBack){
                 IconButton(onClick = navigateUp) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
