@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,9 +34,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,6 +77,8 @@ fun HomeBangunanScreen(
     viewModel: HomeBangunanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    var bangunanToDelete by remember { mutableStateOf<Bangunan?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.getBangunan()
@@ -110,11 +118,58 @@ fun HomeBangunanScreen(
             homeBangunanState = viewModel.bangunanHomeState,
             retryAction = { viewModel.getBangunan() },
             modifier = Modifier.padding(innerPadding),
-            onDeleteClick = { bangunan -> viewModel.deletBangunan(bangunan.idbangunan) },
+            onDeleteClick = { bangunan ->
+                bangunanToDelete = bangunan
+                showDeleteConfirmationDialog = true },
             onUpdateClick = navigateToUpdate,
             onDetailClick = onDetailClick
         )
+        if (showDeleteConfirmationDialog && bangunanToDelete != null) {
+            DeleteConfirmationDialog(
+                onDeleteConfirm = {
+                    bangunanToDelete?.let {
+                        viewModel.deletBangunan(it.idbangunan)
+                    }
+                    showDeleteConfirmationDialog = false
+                },
+                onDeleteCancel = {
+                    showDeleteConfirmationDialog = false
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun DeleteConfirmationDialog(
+    onDeleteConfirm: () -> Unit,
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = {
+            Text("Delete Data",
+                fontWeight = FontWeight.Bold)},
+        text = { Text("Apakah anda yakin ingin menghapus data bangunan?") },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = onDeleteCancel,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)){
+                Text(text = "Cancel")
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDeleteConfirm,
+                colors = ButtonDefaults.textButtonColors(containerColor = colorResource(R.color.primary),
+                    contentColor = Color.White)) {
+                Text(text = "Yes")
+            }
+        }
+    )
 }
 
 @Composable
