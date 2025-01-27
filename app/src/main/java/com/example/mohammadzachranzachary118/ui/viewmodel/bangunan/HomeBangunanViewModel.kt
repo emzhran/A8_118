@@ -21,9 +21,6 @@ class HomeBangunanViewModel (private val bgn: BangunanRepository): ViewModel(){
     var bangunanHomeState: HomeBangunanState by mutableStateOf(HomeBangunanState.Loading)
         private set
 
-    init {
-        getBangunan()
-    }
 
     fun getBangunan(){
         viewModelScope.launch {
@@ -42,6 +39,7 @@ class HomeBangunanViewModel (private val bgn: BangunanRepository): ViewModel(){
         viewModelScope.launch {
             try {
                 bgn.deleteBangunan(id_bangunan)
+                getBangunan()
             }catch (e: IOException){
                 HomeBangunanState.Error
             }catch (e: HttpException){
