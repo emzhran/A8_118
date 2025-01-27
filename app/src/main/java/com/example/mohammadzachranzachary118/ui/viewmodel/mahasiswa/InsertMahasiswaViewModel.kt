@@ -56,21 +56,61 @@ class InsertMahasiswaViewModel (
         insertMahasiswaState = InsertMahasiswaState(insertMahasiswaEvent = insertMahasiswaEvent)
     }
 
-    suspend fun insertMahasiswa(){
-        viewModelScope.launch {
-            try {
-                mhs.insertMahasiswa(insertMahasiswaState.insertMahasiswaEvent.toMahasiswa())
-            }catch (e:Exception){
-                e.printStackTrace()
+    fun insertMahasiswa(){
+        val currentEvent = insertMahasiswaState.insertMahasiswaEvent
+        if (validateFields()) {
+            viewModelScope.launch {
+                try {
+                    mhs.insertMahasiswa(currentEvent.toMahasiswa())
+                    insertMahasiswaState = insertMahasiswaState.copy(
+                        snackBarMessage = "Data berhasil disimpan",
+                        isEntryValid = MahasiswaErrorState()
+                    )
+                } catch (e: Exception) {
+                    insertMahasiswaState = insertMahasiswaState.copy(snackBarMessage = "Data gagal disimpan")
+                }
             }
+        }else{
+            insertMahasiswaState = insertMahasiswaState.copy(snackBarMessage = "Input tidak valid, periksa kembali data")
         }
+    }
+    fun resetSnackBarMessage(){
+        insertMahasiswaState = insertMahasiswaState.copy(snackBarMessage = null)
+    }
+
+    private fun validateFields(): Boolean{
+        val event = insertMahasiswaState.insertMahasiswaEvent
+        val errorState = MahasiswaErrorState(
+            nama = if (event.nama.isNotEmpty()) null else "Nama mahasiswa tidak boleh kosong",
+            nomoridentitas = if (event.nomoridentitas.isNotEmpty()) null else "Nomor identitas tidak boleh kosong",
+            email = if (event.email.isNotEmpty()) null else "Email tidak boleh kosong",
+            nomortelepon = if (event.nomortelepon.isNotEmpty()) null else "Nomor telepon tidak boleh kosong",
+            idkamar = if (event.idkamar.isNotEmpty()) null else "Kamar ID tidak boleh kosong"
+        )
+        insertMahasiswaState = insertMahasiswaState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
 }
 
 
 data class InsertMahasiswaState(
-    val insertMahasiswaEvent : InsertMahasiswaEvent = InsertMahasiswaEvent()
+    val insertMahasiswaEvent : InsertMahasiswaEvent = InsertMahasiswaEvent(),
+    val isEntryValid : MahasiswaErrorState = MahasiswaErrorState(),
+    val snackBarMessage : String? = null
 )
+
+data class MahasiswaErrorState(
+    val nama: String? = null,
+    val nomoridentitas: String? = null,
+    val email: String? = null,
+    val nomortelepon: String? = null,
+    val idkamar: String? = null
+){
+    fun isValid():Boolean{
+        return  nama == null && nomoridentitas == null && email == null
+                && nomortelepon == null && idkamar == null
+    }
+}
 
 data class InsertMahasiswaEvent(
     val idmahasiswa: String ="",
