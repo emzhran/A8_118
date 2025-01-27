@@ -23,9 +23,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +47,9 @@ import com.example.mohammadzachranzachary118.ui.navigasi.DestinasiNavigasi
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.InsertKamarEvent
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.InsertKamarState
 import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.InsertKamarViewModel
+import com.example.mohammadzachranzachary118.ui.viewmodel.kamar.KamarErrorState
 import com.example.mohammadzachranzachary118.ui.viewmodel.penyedia.PenyediaViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object DestinasiInsertkamar: DestinasiNavigasi {
@@ -61,9 +66,20 @@ fun EntryKamarScreen(
 
 ){
 
-    var showDialog by remember { mutableStateOf(false) }
+    val insertKamarState = viewModel.insertKamarState
+    val snackBarHostState = remember {SnackbarHostState()}
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    LaunchedEffect(insertKamarState.snackBarMessage) {
+        insertKamarState.snackBarMessage?.let { message->
+            coroutineScope.launch {
+                snackBarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -73,7 +89,8 @@ fun EntryKamarScreen(
                 showRefresh = false,
                 navigateUp = navigateBack
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { innerpadding->
         EntryBodyKamar(
             insertKamarState = viewModel.insertKamarState,
@@ -81,8 +98,10 @@ fun EntryKamarScreen(
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.insertKamar()
-                    navigateBack()
-                    showDialog = true
+                    if (viewModel.insertKamarState.isEntryValid.isValid()){
+                        delay(700)
+                        navigateBack()
+                    }
                 }
             },
             idBangunanOptions = viewModel.idBangunanOptions,
@@ -90,32 +109,6 @@ fun EntryKamarScreen(
                 .padding(innerpadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
-        )
-    }
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            containerColor = colorResource(R.color.primary),
-            title = {
-                Text(
-                    "Berhasil",
-                    color = Color.White
-                )
-            },
-            text = {
-                Text(
-                    "Data berhasil disimpan.",
-                    color = Color.White
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = { showDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary))
-                ) {
-                    Text("OK", color = Color.White)
-                }
-            }
         )
     }
 }
@@ -137,7 +130,8 @@ fun EntryBodyKamar(
             insertKamarEvent = insertKamarState.insertKamarEvent,
             onValueChange = onKamarValueChange,
             idBangunanOptions = idBangunanOptions,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            errorState = insertKamarState.isEntryValid
         )
         Button(
             onClick = onSaveClick,
@@ -160,6 +154,7 @@ fun FormInputKamar(
     insertKamarEvent: InsertKamarEvent,
     modifier: Modifier = Modifier,
     onValueChange:(InsertKamarEvent)->Unit = {},
+    errorState: KamarErrorState = KamarErrorState(),
     enabled: Boolean = true,
     idBangunanOptions: List<String> = emptyList()
 ){
@@ -178,10 +173,17 @@ fun FormInputKamar(
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
+            isError = errorState.nokamar != null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(R.color.primary)
             )
         )
+        if (!errorState.nokamar.isNullOrEmpty()) {
+            Text(
+                text = errorState.nokamar,
+                color = Color.Red
+            )
+        }
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 value = insertKamarEvent.idbangunan,
@@ -189,6 +191,7 @@ fun FormInputKamar(
                 label = { Text("Bangunan ID") },
                 modifier = Modifier.fillMaxWidth().clickable { bangunanDropdownExpanded = true },
                 enabled = false,
+                isError = errorState.idbangunan != null,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
@@ -199,6 +202,12 @@ fun FormInputKamar(
                     focusedBorderColor = colorResource(R.color.primary)
                 )
             )
+            if (!errorState.idbangunan.isNullOrEmpty()) {
+                Text(
+                    text = errorState.idbangunan,
+                    color = Color.Red
+                )
+            }
             DropdownMenu(
                 expanded = bangunanDropdownExpanded,
                 onDismissRequest = { bangunanDropdownExpanded = false }
@@ -222,10 +231,17 @@ fun FormInputKamar(
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
+            isError = errorState.kapasitas != null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(R.color.primary)
             )
         )
+        if (!errorState.kapasitas.isNullOrEmpty()) {
+            Text(
+                text = errorState.kapasitas,
+                color = Color.Red
+            )
+        }
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 value = insertKamarEvent.statuskamar,
@@ -233,6 +249,7 @@ fun FormInputKamar(
                 label = { Text("Status Kamar") },
                 modifier = Modifier.fillMaxWidth().clickable { statusDropdownExpanded = true },
                 enabled = false,
+                isError = errorState.statuskamar != null,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
@@ -243,6 +260,12 @@ fun FormInputKamar(
                     focusedBorderColor = colorResource(R.color.primary)
                 )
             )
+            if (!errorState.statuskamar.isNullOrEmpty()) {
+                Text(
+                    text = errorState.statuskamar,
+                    color = Color.Red
+                )
+            }
             DropdownMenu(
                 expanded = statusDropdownExpanded,
                 onDismissRequest = { statusDropdownExpanded = false }

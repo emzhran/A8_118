@@ -16,9 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +37,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mohammadzachranzachary118.R
 import com.example.mohammadzachranzachary118.ui.customwidget.TopAppBarr
 import com.example.mohammadzachranzachary118.ui.navigasi.DestinasiNavigasi
+import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.BangunanErrorState
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.InsertBangunanEvent
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.InsertBangunanState
 import com.example.mohammadzachranzachary118.ui.viewmodel.bangunan.InsertBangunanViewModel
 import com.example.mohammadzachranzachary118.ui.viewmodel.penyedia.PenyediaViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object DestinasiEntry: DestinasiNavigasi {
@@ -53,9 +58,20 @@ fun EntryBangunanScreen(
     viewModel: InsertBangunanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 
 ){
-    var showDialog by remember { mutableStateOf(false) }
+    val insertBangunanState = viewModel.insertBangunanState
+    val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    LaunchedEffect(insertBangunanState.snackBarMessage) {
+        insertBangunanState.snackBarMessage?.let { message->
+            coroutineScope.launch {
+                snackBarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -65,7 +81,8 @@ fun EntryBangunanScreen(
                 showRefresh = false,
                 navigateUp = navigateBack
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { innerpadding->
         EntryBodyBangunan(
             insertBangunanState = viewModel.insertBangunanState,
@@ -73,40 +90,16 @@ fun EntryBangunanScreen(
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.insertBangunan()
-                    navigateBack()
-                    showDialog = true
+                    if (viewModel.insertBangunanState.isEntryValid.isValid()){
+                        delay(200)
+                        navigateBack()
+                    }
                 }
             },
             modifier = Modifier
                 .padding(innerpadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
-        )
-    }
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            containerColor = colorResource(R.color.primary),
-            title = {
-                Text(
-                    "Berhasil",
-                    color = Color.White
-                )
-            },
-            text = {
-                Text(
-                    "Data berhasil disimpan.",
-                    color = Color.White
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = { showDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.primary))
-                ) {
-                    Text("OK", color = Color.White)
-                }
-            }
         )
     }
 }
@@ -125,7 +118,8 @@ fun EntryBodyBangunan(
         FormInputBangunan(
             insertBangunanEvent = insertBangunanState.insertBangunanEvent,
             onValueChange = onBangunanValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            errorState = insertBangunanState.isEntryValid
         )
         Button(
             onClick = onSaveClick,
@@ -148,6 +142,7 @@ fun FormInputBangunan(
     insertBangunanEvent: InsertBangunanEvent,
     modifier: Modifier = Modifier,
     onValueChange:(InsertBangunanEvent)->Unit = {},
+    errorState: BangunanErrorState = BangunanErrorState(),
     enabled: Boolean = true
 ){
     Column(
@@ -161,10 +156,17 @@ fun FormInputBangunan(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true,
+            isError = errorState.namabangunan != null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(R.color.primary)
             )
         )
+        if (!errorState.namabangunan.isNullOrEmpty()) {
+            Text(
+                text = errorState.namabangunan,
+                color = Color.Red
+            )
+        }
         OutlinedTextField(
             value = insertBangunanEvent.jumlahlantai,
             onValueChange = {onValueChange(insertBangunanEvent.copy(jumlahlantai = it))},
@@ -173,10 +175,17 @@ fun FormInputBangunan(
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
+            isError = errorState.jumlahlantai != null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(R.color.primary)
             )
         )
+        if (!errorState.jumlahlantai.isNullOrEmpty()) {
+            Text(
+                text = errorState.jumlahlantai,
+                color = Color.Red
+            )
+        }
         OutlinedTextField(
             value = insertBangunanEvent.alamat,
             onValueChange = {onValueChange(insertBangunanEvent.copy(alamat = it))},
@@ -184,10 +193,17 @@ fun FormInputBangunan(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true,
+            isError = errorState.alamat != null,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = colorResource(R.color.primary)
             )
         )
+        if (!errorState.alamat.isNullOrEmpty()) {
+            Text(
+                text = errorState.alamat,
+                color = Color.Red
+            )
+        }
         if (enabled){
             Text(
                 text = "Isi Semua Data",

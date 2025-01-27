@@ -57,21 +57,60 @@ class InsertKamarViewModel (
     }
 
     suspend fun insertKamar(){
-        viewModelScope.launch {
-            try {
-                kamar.insertKamar(insertKamarState.insertKamarEvent.toKamar())
-            }catch (e:Exception){
-                e.printStackTrace()
+        val currentEvent = insertKamarState.insertKamarEvent
+        if (validateFields()) {
+            viewModelScope.launch {
+                try {
+                    kamar.insertKamar(currentEvent.toKamar())
+                    insertKamarState = insertKamarState.copy(
+                        snackBarMessage = "Data berhasil disimpan",
+                        isEntryValid = KamarErrorState()
+                    )
+                } catch (e: Exception) {
+                    insertKamarState = insertKamarState.copy(snackBarMessage = "Data gagal disimpan")
+                }
             }
+        }else{
+            insertKamarState = insertKamarState.copy(snackBarMessage = "Input tidak valid, periksa kembali data")
         }
+    }
+
+    fun resetSnackBarMessage(){
+        insertKamarState = insertKamarState.copy(snackBarMessage = null)
+    }
+
+    private fun validateFields(): Boolean{
+        val event = insertKamarState.insertKamarEvent
+        val errorState = KamarErrorState(
+            nokamar =  if (event.nokamar.isNotEmpty()) null else "Nomor kamar tidak boleh kosong",
+            idbangunan = if (event.idbangunan.isNotEmpty()) null else "Bangunan ID tidak boleh kosong",
+            kapasitas = if (event.kapasitas.isNotEmpty()) null else "Kapasitas tidak boleh kosong",
+            statuskamar = if (event.statuskamar.isNotEmpty()) null else "Status kamar tidak boleh kosong"
+        )
+        insertKamarState = insertKamarState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
 }
 
 
 
 data class InsertKamarState(
-    val insertKamarEvent : InsertKamarEvent = InsertKamarEvent()
+    val insertKamarEvent : InsertKamarEvent = InsertKamarEvent(),
+    val isEntryValid : KamarErrorState = KamarErrorState(),
+    val snackBarMessage : String? = null
 )
+
+data class KamarErrorState(
+    val nokamar: String?= null,
+    val idbangunan: String?= null,
+    val kapasitas: String?= null,
+    val statuskamar: String?=null
+){
+    fun isValid():Boolean{
+        return  nokamar == null && idbangunan == null
+                && kapasitas == null && statuskamar == null
+    }
+}
 
 data class InsertKamarEvent(
     val idkamar: String ="",

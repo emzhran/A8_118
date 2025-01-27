@@ -18,20 +18,56 @@ class InsertBangunanViewModel (private val bgn: BangunanRepository): ViewModel()
     }
 
     suspend fun insertBangunan(){
-        viewModelScope.launch {
-            try {
-                bgn.insertBangunan(insertBangunanState.insertBangunanEvent.toBangunan())
-            }catch (e:Exception){
-                e.printStackTrace()
+        val currentEvent = insertBangunanState.insertBangunanEvent
+        if (validateFields()) {
+            viewModelScope.launch {
+                try {
+                    bgn.insertBangunan(currentEvent.toBangunan())
+                    insertBangunanState = insertBangunanState.copy(
+                        snackBarMessage = "Data berhasil disimpan",
+                        isEntryValid = BangunanErrorState()
+                    )
+                } catch (e: Exception) {
+                    insertBangunanState = insertBangunanState.copy(snackBarMessage = "Data gagal disimpan")
+                }
             }
+        }else{
+            insertBangunanState = insertBangunanState.copy(snackBarMessage = "Input tidak valid, periksa kembali data")
         }
+    }
+
+    fun resetSnackBarMessage(){
+        insertBangunanState = insertBangunanState.copy(snackBarMessage = null)
+    }
+
+    private fun validateFields(): Boolean{
+        val event = insertBangunanState.insertBangunanEvent
+        val errorState = BangunanErrorState(
+            namabangunan =  if (event.namabangunan.isNotEmpty()) null else "Nama bangunan tidak boleh kosong",
+            jumlahlantai = if (event.jumlahlantai.isNotEmpty()) null else "Jumlah lantai tidak boleh kosong",
+            alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh kosong"
+        )
+        insertBangunanState = insertBangunanState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
 }
 
 
 data class InsertBangunanState(
-    val insertBangunanEvent : InsertBangunanEvent = InsertBangunanEvent()
+    val insertBangunanEvent : InsertBangunanEvent = InsertBangunanEvent(),
+    val isEntryValid : BangunanErrorState = BangunanErrorState(),
+    val snackBarMessage : String? = null
 )
+
+data class BangunanErrorState(
+    val namabangunan: String?= null,
+    val jumlahlantai: String?= null,
+    val alamat:  String?=null
+){
+    fun isValid():Boolean{
+        return  namabangunan == null && jumlahlantai == null && alamat == null
+    }
+}
 
 data class InsertBangunanEvent(
     val idbangunan: String ="",

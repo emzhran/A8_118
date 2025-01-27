@@ -45,20 +45,60 @@ class InsertPembayaranViewModel (
     }
 
     suspend fun insertPembayaran(){
-        viewModelScope.launch {
-            try {
-                pmbyrn.insertPembayaran(insertPembayaranState.insertPembayaranEvent.toPembayaran())
-            }catch (e:Exception){
-                e.printStackTrace()
+        val currentEvent = insertPembayaranState.insertPembayaranEvent
+        if (validateFields()) {
+            viewModelScope.launch {
+                try {
+                    pmbyrn.insertPembayaran(currentEvent.toPembayaran())
+                    insertPembayaranState = insertPembayaranState.copy(
+                        snackBarMessage = "Data berhasil disimpan",
+                        isEntryValid = PembayaranErrorState()
+                    )
+                } catch (e: Exception) {
+                    insertPembayaranState = insertPembayaranState.copy(snackBarMessage = "Data gagal disimpan")
+                }
             }
+        }else{
+            insertPembayaranState = insertPembayaranState.copy(snackBarMessage = "Input tidak valid, periksa kembali data")
         }
+    }
+
+    fun resetSnackBarMessage(){
+        insertPembayaranState = insertPembayaranState.copy(snackBarMessage = null)
+    }
+
+    private fun validateFields(): Boolean{
+        val event = insertPembayaranState.insertPembayaranEvent
+        val errorState = PembayaranErrorState(
+            idmahasiswa =  if (event.idmahasiswa.isNotEmpty()) null else "Mahasiswa ID tidak boleh kosong",
+            jumlah = if (event.jumlah.isNotEmpty()) null else "Jumlah pembayaran tidak boleh kosong",
+            tanggalbayar = if (event.tanggalbayar.isNotEmpty()) null else "Tanggal pembayaran tidak boleh kosong",
+            statusbayar = if (event.statusbayar.isNotEmpty()) null else "Status pembayaran tidak boleh kosong"
+        )
+        insertPembayaranState = insertPembayaranState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
 }
 
 
 data class InsertPembayaranState(
-    val insertPembayaranEvent : InsertPembayaranEvent = InsertPembayaranEvent()
+    val insertPembayaranEvent : InsertPembayaranEvent = InsertPembayaranEvent(),
+    val isEntryValid : PembayaranErrorState = PembayaranErrorState(),
+    val snackBarMessage : String? = null
 )
+
+
+data class PembayaranErrorState(
+    val idmahasiswa: String?= null,
+    val jumlah: String?= null,
+    val tanggalbayar: String?= null,
+    val statusbayar: String?= null
+){
+    fun isValid():Boolean{
+        return  idmahasiswa == null && jumlah == null
+                && tanggalbayar == null && statusbayar == null
+    }
+}
 
 data class InsertPembayaranEvent(
     val idpembayaran: String ="",
