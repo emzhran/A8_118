@@ -179,7 +179,7 @@ fun FormInputPembayaran(
     val context = LocalContext.current
     val datePickerDialog = remember {
         DatePickerDialog(context, { _, year, month, dayOfMonth ->
-            selectedDate = "$dayOfMonth/${month + 1}/$year"
+            selectedDate = "$year/${month + 1}/$dayOfMonth"
             onValueChange(updatePembayaranEvent.copy(tanggalbayar = selectedDate))
         }, 2025, 0, 1)
     }
