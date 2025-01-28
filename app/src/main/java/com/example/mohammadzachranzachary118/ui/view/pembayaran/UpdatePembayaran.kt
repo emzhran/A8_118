@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -176,14 +178,20 @@ fun FormInputPembayaran(
     val statusOptions = listOf("Lunas", "Belum Lunas")
     var selectedDate by remember { mutableStateOf(updatePembayaranEvent.tanggalbayar) }
 
+    val currentTanggalBayar = rememberUpdatedState(updatePembayaranEvent.tanggalbayar)
+    selectedDate = currentTanggalBayar.value
+    var openDatePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val datePickerDialog = remember {
-        DatePickerDialog(context, { _, year, month, dayOfMonth ->
-            selectedDate = "$year/${month + 1}/$dayOfMonth"
-            onValueChange(updatePembayaranEvent.copy(tanggalbayar = selectedDate))
-        }, 2025, 0, 1)
+    if (openDatePicker) {
+        val datePickerDialog = DatePickerDialog(
+            context, { _, year, month, dayOfMonth ->
+                selectedDate = "$year/${month + 1}/$dayOfMonth"
+                onValueChange(updatePembayaranEvent.copy(tanggalbayar = selectedDate))
+                openDatePicker = false
+            }, 2025, 0, 1
+        )
+        datePickerDialog.show()
     }
-
 
     Column(
         modifier = modifier,
@@ -201,11 +209,11 @@ fun FormInputPembayaran(
             )
         )
         OutlinedTextField(
-            value = updatePembayaranEvent.tanggalbayar,
+            value = selectedDate,
             onValueChange = {},
             label = { Text("Tanggal Pembayaran") },
             modifier = Modifier.fillMaxWidth().clickable {
-                datePickerDialog.show()
+                openDatePicker = true
             },
             enabled = false,
             singleLine = true,
