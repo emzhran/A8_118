@@ -59,7 +59,7 @@ fun BottomAppBar(
                     onClick = onKamarClick
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Home,
+                        painter = painterResource(R.drawable.icons8_room),
                         contentDescription = "Kamar",
                         tint = Color.White
                     )
@@ -105,7 +105,7 @@ fun BottomAppBar(
                     onClick = onBangunanClick
                 ) {
                     Icon(
-                        imageVector = Icons.Default.LocationOn,
+                        painter = painterResource(R.drawable.icons8_building),
                         contentDescription = "Bangunan",
                         tint = Color.White
                     )
