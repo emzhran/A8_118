@@ -23,6 +23,7 @@ fun TopAppBarr(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior?=null,
     navigateUp:()->Unit={},
     onRefresh:()->Unit={},
     showRefresh: Boolean
@@ -42,6 +43,7 @@ fun TopAppBarr(
             }
         },
         modifier = modifier,
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
             if (canNavigateBack){
                 IconButton(onClick = navigateUp) {

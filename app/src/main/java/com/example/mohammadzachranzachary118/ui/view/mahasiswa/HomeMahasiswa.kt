@@ -80,7 +80,7 @@ fun HomeMahasiswaScreen(
     viewModel: HomeMahasiswaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
 
-
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var mahasiswaToDelete by remember { mutableStateOf<Mahasiswa?>(null) }
 
@@ -89,13 +89,14 @@ fun HomeMahasiswaScreen(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBarr(
                 title = DestinasiHomeMahasiswa.titleRes,
                 canNavigateBack = false,
                 navigateUp = navigateBack,
                 showRefresh = true,
+                scrollBehavior = scrollBehavior,
                 onRefresh = {
                     viewModel.getMhs()
                 }
