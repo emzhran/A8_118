@@ -35,10 +35,11 @@ class RiwayatPembayaranViewModel(private val pmbyrn: PembayaranRepository) : Vie
         }
     }
 
-    fun deletePembayaran(id_pembayaran: String) {
+    fun deletePembayaran(id_mahasiswa: String) {
         viewModelScope.launch {
             try {
-                pmbyrn.deletePembayaran(id_pembayaran)
+                pmbyrn.deletePembayaran(id_mahasiswa)
+                getRiwayat(id_mahasiswa)
             } catch (e: IOException) {
                 RiwayatPembayaranState.Error
             } catch (e: HttpException) {
